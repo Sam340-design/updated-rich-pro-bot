@@ -1,31 +1,28 @@
-UPDATED_RICH PRO Signals - Payment Gate (Option A: deep-link + verification token)
+UPDATED_RICH PRO Signals - Production package
 
+Important: Do NOT hardcode secrets. Set these environment variables on Render:
 
-Files included:
-- main.py  (use env vars for keys)
-- requirements.txt
-- banner.png
+BOT_TOKEN = your Telegram bot token
+PAYSTACK_PUBLIC_KEY = pk_live_...
+PAYSTACK_SECRET_KEY = sk_live_...
+PUBLIC_BASE_URL = https://updated-rich-pro-bot-1.onrender.com
+ADMIN_TELEGRAM_ID = your numeric Telegram id
+SIGNAL_BOT_USERNAME = minesprosignal_bot
+SUBSCRIPTION_AMOUNT_GHS = 60
+SUBSCRIPTION_DISPLAY_AMOUNT = $5.00
 
-
-Quick setup (Render):
-
-1) In Render, create a Web Service and connect repo or upload files.
+Deploy notes:
+- Root directory: .
 - Build command: pip install -r requirements.txt
 - Start command: gunicorn main:app
-- Root directory: .
 
-2) Environment variables (Render):
-   BOT_TOKEN, PAYSTACK_PUBLIC_KEY, PAYSTACK_SECRET_KEY, PUBLIC_BASE_URL, ADMIN_TELEGRAM_ID
+After deploy make sure to set:
+- Telegram webhook: https://api.telegram.org/bot<YOUR_TOKEN>/setWebhook?url=https://updated-rich-pro-bot-1.onrender.com/webhook
+- Paystack webhook (live): https://updated-rich-pro-bot-1.onrender.com/paystack/webhook
 
-3) Paystack webhook: set to https://<your-app>/paystack/webhook
-   Callback (optional): https://<your-app>/payment-success
+Testing:
+- Use /start to confirm bot responds
+- Use /pay to generate a Paystack checkout
 
-4) Behavior:
-   - /pay produces an inline Pay button showing USD equivalent but charges ₵60 (GHS)
-   - After Paystack confirms payment, the webhook stores user and generates a token
-     and sends a deep-link to the main signal bot: https://t.me/minesprosignal_bot?start=TOKEN
-   - Expiry is hidden; when it ends user gets a renewal prompt.
-
-Security notes:
-- The DB stores IP addresses and tokens. Treat as personal data.
-- Do not publish secret keys.
+Security:
+- This app stores Telegram IDs and IP addresses in a local SQLite DB. Use responsibly.
