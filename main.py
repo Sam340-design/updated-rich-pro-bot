@@ -213,3 +213,8 @@ if __name__ == '__main__':
     Thread(target=run_telegram, daemon=True).start()
     Thread(target=check_expirations_and_prompt, daemon=True).start()
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+if __name__ == "__main__":
+    from waitress import serve  # production-ready WSGI server
+    import os
+    port = int(os.environ.get("PORT", 10000))
+    serve(app, host="0.0.0.0", port=port)
